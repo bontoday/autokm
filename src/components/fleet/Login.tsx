@@ -45,9 +45,9 @@ export function Login() {
       <Panel className="w-full max-w-md">
         <div className="mb-6 text-center">
           <div className="mx-auto mb-3 grid size-12 place-items-center rounded-md bg-primary font-mono text-xl font-semibold text-primary-ink">
-            A
+            L
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Andén</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Leo</h1>
           <p className="text-sm text-muted">Control de transporte</p>
         </div>
 

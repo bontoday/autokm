@@ -137,10 +137,10 @@ function Brand({ compact = false }: { compact?: boolean }) {
   return (
     <div className="flex items-center gap-3">
       <div className="grid size-10 place-items-center rounded-md bg-primary font-mono text-base font-semibold text-primary-ink">
-        A
+        L
       </div>
       <div>
-        <p className="text-base leading-none font-semibold tracking-tight">Andén</p>
+        <p className="text-base leading-none font-semibold tracking-tight">Leo</p>
         <p className={cn("text-muted", compact ? "text-xs" : "mt-1 text-sm")}>Control de transporte</p>
       </div>
     </div>
