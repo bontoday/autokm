@@ -1,4 +1,4 @@
-export type VehicleType = "camion" | "van" | "bus" | "auto" | "moto";
+export type VehicleType = "camion" | "minivan" | "bus" | "auto" | "moto";
 
 export type Vehicle = {
   id: string;
@@ -9,6 +9,7 @@ export type Vehicle = {
   oilIntervalKm: number;
   openingKm: number;
   active: boolean;
+  userId?: string | null;
 };
 
 export type MileageEntry = {
@@ -33,6 +34,25 @@ export type OilChange = {
   notes: string;
 };
 
+// src/lib/fleet/types.ts
+// ... (tu código anterior)
+
+export type SoatChange = {
+  id: string;
+  vehicleId: string;
+  startDate: string;
+  endDate: string;
+  company: string;
+  cost: number;
+  notes: string;
+};
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+};
 export type TabId = "tablero" | "km" | "aceite" | "unidades";
 
 export type Period = "month" | "30d" | "all";

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { Bike, Bus, Car, Pencil, Plus, Truck } from "lucide-react";
 import {
   currentKm,
@@ -54,6 +55,12 @@ export function Units() {
   const removeVehicle = useFleet((s) => s.removeVehicle);
   const loadDemo = useFleet((s) => s.loadDemo);
   const clearAll = useFleet((s) => s.clearAll);
+  const drivers = useFleet((s) => s.drivers);
+  const loadDrivers = useFleet((s) => s.loadDrivers);
+
+  useEffect(() => {
+    loadDrivers();
+  }, [loadDrivers]);
 
   const [editing, setEditing] = useState<string | "new" | null>(null);
   const [form, setForm] = useState<VehicleInput>(emptyForm);
@@ -166,6 +173,20 @@ export function Units() {
                 required
               />
             </Field>
+            <Field label="Asignar cuenta de la app (Chofer)">
+              <select
+                className={controlClass}
+                value={form.userId || ""}
+                onChange={(e) => setForm({ ...form, userId: e.target.value || null })}
+              >
+                <option value="">-- Sin asignar (Solo Admin) --</option>
+                {drivers.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name || "Chofer"} ({d.email})
+                  </option>
+                ))}
+              </select>
+            </Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Km inicial" hint="Odómetro al dar de alta">
                 <input
@@ -260,13 +281,27 @@ export function Units() {
                   <span className="grid size-11 shrink-0 place-items-center rounded-md bg-ok-bg text-primary">
                     <Icon className="size-5" />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-mono text-lg font-semibold tracking-wide">{vehicle.plate}</p>
-                    <p className="text-sm text-ink">
-                      {vehicle.alias} · {TYPE_LABEL[vehicle.type]}
-                    </p>
-                    <p className="text-sm text-muted">{vehicle.driver}</p>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-lg font-semibold tracking-wide">{vehicle.plate}</p>
+                  <p className="text-sm text-ink">
+                    {vehicle.alias} · {TYPE_LABEL[vehicle.type]}
+                  </p>
+                  <p className="text-sm text-muted">{vehicle.driver}</p>
+                  
+                  {/* NUEVO: Mostrar correo del chofer asignado */}
+                  {(() => {
+                    const assigned = drivers.find((d) => d.id === vehicle.userId);
+                    return assigned ? (
+                      <p className="mt-0.5 text-xs font-medium text-primary">
+                        App: {assigned.email}
+                      </p>
+                    ) : (
+                      <p className="mt-0.5 text-xs text-muted italic">
+                        App: Sin asignar
+                      </p>
+                    );
+                  })()}
+                </div>
                   <StatusPill status={vehicle.active ? oil.status : "missing"} label={vehicle.active ? OIL_LABEL[oil.status] : "Inactiva"} />
                 </div>
                 <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
@@ -306,31 +341,7 @@ export function Units() {
         })}
       </ul>
 
-      <Panel>
-        <h2 className="text-sm font-semibold">Datos de esta bitácora</h2>
-        <p className="mt-1 text-sm text-muted">
-          Se guardan en este dispositivo. El ejemplo trae cinco unidades de Lima para ver los indicadores.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <GhostButton onClick={loadDemo}>Restaurar ejemplo</GhostButton>
-          {confirmClear ? (
-            <GhostButton
-              danger
-              onClick={() => {
-                clearAll();
-                setConfirmClear(false);
-                setEditing(null);
-              }}
-            >
-              Sí, borrar todo
-            </GhostButton>
-          ) : (
-            <GhostButton danger onClick={() => setConfirmClear(true)}>
-              Borrar todo
-            </GhostButton>
-          )}
-        </div>
-      </Panel>
+      
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Trash2 } from "lucide-react";
 import {
   currentKm,
@@ -21,6 +21,12 @@ export function MileageLog() {
 
   const active = vehicles.filter((v) => v.active);
   const [vehicleId, setVehicleId] = useState(active[0]?.id ?? vehicles[0]?.id ?? "");
+  // Esto asegura que el camión se seleccione solo cuando los datos cargan
+  useEffect(() => {
+    if (!vehicleId && vehicles.length > 0) {
+      setVehicleId(vehicles[0].id);
+    }
+  }, [vehicles, vehicleId]);
   const [date, setDate] = useState(todayISO);
   const [odometer, setOdometer] = useState("");
   const [route, setRoute] = useState("");
@@ -53,8 +59,8 @@ export function MileageLog() {
     setError("");
   }
 
-  function submit() {
-    const message = addEntry({
+  async function submit() {
+    const message = await addEntry({
       vehicleId,
       date,
       odometer: typed,
