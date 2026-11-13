@@ -4,7 +4,7 @@ import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { getCookie } from "@tanstack/react-start/server";
 import { randomBytes } from "node:crypto";
 import { Pool } from "pg";
-import { ensureDbReady, getPglite } from "../db";
+import { ensureDbReady, getPglite, getSql } from "../db";
 import { emailAndPasswordEnabled } from "./email-password";
 import { GATE_PROVIDER_ID, gateIdentitySessions } from "./gate-session.server";
 import { GROK_PROVIDERS } from "./providers";
@@ -147,6 +147,34 @@ export const auth = betterAuth({
   // globalThis so HMR doesn't invalidate PGLite-backed sessions (see above).
   secret: env("BETTER_AUTH_SECRET") ?? previewAuthSecret(),
   database,
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          try {
+            const sql = await getSql();
+            // Contamos cuántos usuarios hay en la base de datos
+            const rows = await sql`select count(*) as count from "user"`;
+            const count = Number(rows[0]?.count || 0);
+            
+            // Si no hay ningún usuario, el primero será ADMIN
+            if (count === 0) {
+              return {
+                data: {
+                  ...user,
+                  role: "admin", // <-- Se asigna el rol de admin
+                },
+              };
+            }
+          } catch (error) {
+            console.error("Error verificando el primer usuario:", error);
+          }
+          // Si ya hay usuarios, se queda con el rol por defecto ("driver")
+          return { data: user };
+        },
+      },
+    },
+  },
 
   // CSRF / origin check for credentialed auth POSTs (email sign-up/sign-in, …).
   // See `trustedOrigins` construction above — must cover live preview hosts AND
