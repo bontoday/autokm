@@ -3,7 +3,7 @@ import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "Leo |Control de Flota";
+const APP_NAME = "Leo | Control de Flota";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -12,13 +12,18 @@ export const Route = createRootRoute({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: APP_NAME },
       { name: "description", content: "Control de transporte: kilometraje, cambios de aceite y KPIs de flota." },
-      { name: "theme-color", content: "#efe8dc" },
+      { name: "theme-color", content: "#0f766e" }, // <-- Cambiado al verde de tu app
     ],
     links: [
+      // ICONOS Y MANIFIESTO PROPIOS
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96x96.png" },
+      { rel: "shortcut icon", href: "/favicon.ico" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" }, // <-- Tu manifiesto real
+
+      // ESTILOS Y FUENTES
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -31,12 +36,7 @@ export const Route = createRootRoute({
     <html lang="es" suppressHydrationWarning>
       <head>
         <HeadContent />
-        {/* ICONOS DE LA APP - PEGADOS AQUÍ */}
-        <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
+        {/* NO PONGAS NADA MÁS AQUÍ, HeadContent se encarga de inyectar los links de arriba */}
       </head>
       <body>
         <PreviewHostBridge />
